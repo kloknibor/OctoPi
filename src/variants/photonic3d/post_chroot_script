@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -x
+
+source /common.sh
+install_chroot_fail_on_error_trap
+
+apt-get remove -y --purge aptitude aptitude-common g++ g++-4.9 gcc gcc-4.9 gdb gdbserver luajit perl perl-modules python python-minimal python-rpi.gpio python2.7 python2.7-minimal
+apt-get autoremove -y
+
+apt-get -y --force-yes install xinit x11-xserver-utils oracle-java8-jdk fswebcam librxtx-java hostapd isc-dhcp-server
+apt-get clean
+
+echo "start_x=0" >> /boot/config.txt
+echo "gpu_mem=64" >> /boot/config.txt
+echo "disable_overscan=1" >> /boot/config.txt
+echo "framebuffer_depth=24" >> /boot/config.txt
+echo "framebuffer_ignore_alpha=1" >> /boot/config.txt
+
+
+wget "$OCTOPI_PHOTONIC3D_START_URL"
+chmod a+rx start.sh
+./start.sh

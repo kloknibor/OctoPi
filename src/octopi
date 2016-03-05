@@ -12,14 +12,14 @@ function execute_chroot_script() {
 
   #black magic of qemu-arm-static
   cp `which qemu-arm-static` usr/bin
-  
+
   cp $2 chroot_script
   chmod 755 chroot_script
   cp $OCTOPI_SCRIPT_PATH/common.sh common.sh
   chmod 755 common.sh
-  
+
   chroot . usr/bin/qemu-arm-static /bin/bash /chroot_script
-  
+
   #cleanup
   rm chroot_script
   rm -rfv filesystem
@@ -32,8 +32,8 @@ install_fail_on_error_trap $OCTOPI_MOUNT_PATH
 unmount_image $OCTOPI_MOUNT_PATH || true
 
 pushd $OCTOPI_WORKSPACE
-  
-  if [ -e *.img ]; then  
+
+  if [ -e *.img ]; then
     rm *.img
   fi
   unzip $OCTOPI_ZIP_IMG
@@ -57,13 +57,16 @@ pushd $OCTOPI_WORKSPACE
   #Edit pi filesystem
   pushd $OCTOPI_MOUNT_PATH
     #Put git clones in place
-    
-    pushd home/pi 
-        gitclone OCTOPI_OCTOPRINT_REPO OctoPrint
-        gitclone OCTOPI_OCTOPIPANEL_REPO OctoPiPanel
-        gitclone OCTOPI_FBCP_REPO rpi-fbcp
-        gitclone OCTOPI_MJPGSTREAMER_REPO mjpg-streamer
-    popd
+
+    if [ -n "$OCTOPI_INCLUDE_OCTOPRINT"]
+    then
+      pushd home/pi
+          gitclone OCTOPI_OCTOPRINT_REPO OctoPrint
+          gitclone OCTOPI_OCTOPIPANEL_REPO OctoPiPanel
+          gitclone OCTOPI_FBCP_REPO rpi-fbcp
+          gitclone OCTOPI_MJPGSTREAMER_REPO mjpg-streamer
+      popd
+    fi
 
     #make QEMU boot (remember to return)
     fixLd
@@ -80,10 +83,10 @@ pushd $OCTOPI_WORKSPACE
       echo "Injecting variant pre script from $VARIANT_BASE..."
       execute_chroot_script $VARIANT_BASE $VARIANT_BASE/pre_chroot_script
     fi
- 
+
     # execute the base chroot script
     execute_chroot_script $OCTOPI_SCRIPT_PATH $OCTOPI_CHROOT_SCRIPT_PATH
-    
+
     # if building a variant, execute its post-chroot script
     if [ -n "$VARIANT_BASE" ] && [ -f $VARIANT_BASE/post_chroot_script ]; then
       echo "Injecting variant post script from $VARIANT_BASE..."
@@ -98,7 +101,7 @@ pushd $OCTOPI_WORKSPACE
 
     restoreLd
   popd
-  
+
   # unmount first boot, then root partition
   unmount_image $OCTOPI_MOUNT_PATH
   chmod 777 $OCTOPI_IMG_PATH
@@ -109,4 +112,3 @@ pushd $OCTOPI_WORKSPACE
     minimize_ext $OCTOPI_IMG_PATH 2 $OCTOPI_IMAGE_RESIZEROOT
   fi
 popd
-
