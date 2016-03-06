@@ -12,9 +12,9 @@ apt-get -y --force-yes install xinit x11-xserver-utils oracle-java8-jdk fswebcam
 
 apt-get remove -y --purge aptitude aptitude-common g++ g++-4.9 gcc gcc-4.9 gdb gdbserver luajit perl perl-modules python-rpi.gpio bluez bluez-firmware geoip-database libc-dev-bin libfreetype6-dev samba-common libdrm-radeon1 libdrm-amdgpu1 libdrm-freedreno1 libdrm-nouveau2 xserver-xorg-input-synaptics xserver-xorg-input-wacom
 
-apt-get upgrade
+apt-get -y --force-yes upgrade
 apt-get autoremove -y
-apt-get clean
+apt-get -y clean
 
 rm -r /usr/sbin/policy-rc.d
 
@@ -30,7 +30,7 @@ unpack /filesystem/root /
 update-rc.d -f bind9 remove
 update-rc.d -f isc-dhcp-server remove
 update-rc.d -f hostapd remove
-udpate-rc.d -f wifi_access_point remove
+update-rc.d -f wifi_access_point remove
 #update-rc.d wifi_access_point defaults
 
 wget "$OCTOPI_PHOTONIC3D_START_URL"
