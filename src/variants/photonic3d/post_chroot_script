@@ -4,11 +4,19 @@ set -x
 source /common.sh
 install_chroot_fail_on_error_trap
 
-apt-get remove -y --purge aptitude aptitude-common g++ g++-4.9 gcc gcc-4.9 gdb gdbserver luajit perl perl-modules python python-minimal python-rpi.gpio python2.7 python2.7-minimal
-apt-get autoremove -y
+# prevent any installed services from automatically starting
+echo exit 101 > /usr/sbin/policy-rc.d
+chmod +x /usr/sbin/policy-rc.d
 
-apt-get -y --force-yes install xinit x11-xserver-utils oracle-java8-jdk fswebcam librxtx-java hostapd isc-dhcp-server
+apt-get -y --force-yes install xinit x11-xserver-utils oracle-java8-jdk fswebcam librxtx-java hostapd isc-dhcp-server bind9 bind9utils dnsutils
+
+apt-get remove -y --purge aptitude aptitude-common g++ g++-4.9 gcc gcc-4.9 gdb gdbserver luajit perl perl-modules python-rpi.gpio bluez bluez-firmware geoip-database libc-dev-bin libfreetype6-dev samba-common libdrm-radeon1 libdrm-amdgpu1 libdrm-freedreno1 libdrm-nouveau2 xserver-xorg-input-synaptics xserver-xorg-input-wacom
+
+apt-get upgrade
+apt-get autoremove -y
 apt-get clean
+
+rm -r /usr/sbin/policy-rc.d
 
 echo "start_x=0" >> /boot/config.txt
 echo "gpu_mem=64" >> /boot/config.txt
@@ -16,7 +24,22 @@ echo "disable_overscan=1" >> /boot/config.txt
 echo "framebuffer_depth=24" >> /boot/config.txt
 echo "framebuffer_ignore_alpha=1" >> /boot/config.txt
 
+# install config files
+unpack /filesystem/root /
+
+update-rc.d -f bind9 remove
+update-rc.d -f isc-dhcp-server remove
+update-rc.d -f hostapd remove
+udpate-rc.d -f wifi_access_point remove
+#update-rc.d wifi_access_point defaults
 
 wget "$OCTOPI_PHOTONIC3D_START_URL"
 chmod a+rx start.sh
+# comment out the calls to startx/java, don't actually want to start the server
+sed -i -e 's/^\(\s*java \)/\#\1/' start.sh
+sed -i -e 's/^\(\s*startx \)/\#\1/' start.sh
 ./start.sh
+
+echo "All installed packages:"
+echo "-----------------------"
+dpkg --get-selections | grep -v deinstall
