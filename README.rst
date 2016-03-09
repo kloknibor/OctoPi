@@ -4,7 +4,8 @@ Photonic3D Image Builder (Based on OctoPi)
 Where to get it?
 ----------------
 
-Hosting of generated images is still work-in-progress.
+The latest image based on the current stable build can be dowloaded from:
+ http://s3-us-west-2.amazonaws.com/photonic3d/photonic-image.zip
 
 How to use it?
 --------------
