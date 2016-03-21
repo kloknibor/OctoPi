@@ -8,4 +8,4 @@ OCTOPI_INCLUDE_WIRINGPI=no
 OCTOPI_IMAGE_RESIZEROOT=250
 
 OCTOPI_OVERRIDE_HOSTNAME=photonic3d
-OCTOPI_PHOTONIC3D_START_URL=https://github.com/WesGilster/Creation-Workshop-Host/raw/master/host/bin/start.sh
+OCTOPI_PHOTONIC3D_START_URL=https://github.com/kloknibor/Creation-Workshop-Host/raw/master/host/bin/start.sh
