@@ -9,7 +9,7 @@ echo exit 101 > /usr/sbin/policy-rc.d
 chmod +x /usr/sbin/policy-rc.d
 
 # Begin DL of latest zip distribution in the background
-bash -c 'curl -s https://api.github.com/repos/area515/Creation-Workshop-Host/releases/latest | grep "browser_" | cut -d\" -f4 | grep cwh-' &
+bash -c 'wget $(curl -s https://api.github.com/repos/area515/Creation-Workshop-Host/releases/latest | grep "browser_" | cut -d\" -f4 | grep cwh-)' &
 
 apt-get -y --force-yes install xinit x11-xserver-utils oracle-java8-jdk fswebcam librxtx-java hostapd isc-dhcp-server bind9 bind9utils dnsutils avahi-daemon libavahi-compat-libdnssd1
 
