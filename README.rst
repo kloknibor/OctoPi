@@ -5,7 +5,7 @@ Where to get it?
 ----------------
 
 The latest image based on the current stable build can be dowloaded from:
- http://s3-us-west-2.amazonaws.com/photonic3d/photonic-image.zip
+ http://d359hvxwrop0le.cloudfront.net/photonic-image.zip
 
 How to use it?
 --------------
